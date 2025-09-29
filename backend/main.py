@@ -5,6 +5,7 @@ This module provides a FastAPI backend for the T2V Near AI Agent,
 offering health checks, example endpoints, and environment information.
 """
 
+import sys
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -18,9 +19,23 @@ from middleware.security.input_sanitizer import InputSanitizationMiddleware
 from middleware.security.api_key_auth import APIKeyAuthMiddleware
 from middleware.security.security_logger import SecurityLoggingMiddleware
 from middleware.security.security_monitor import SecurityMonitoringMiddleware
+from utils.environment_manager import EnvironmentManager, EnvironmentValidationError
+from utils.logger import logger
 
 # Load environment variables
 load_dotenv()
+
+# Validate environment variables on startup
+try:
+    env_manager = EnvironmentManager()
+    validation_status = env_manager.get_validation_status()
+    logger.info(f"Environment validation status: {validation_status}")
+except EnvironmentValidationError as e:
+    logger.error(f"Environment validation failed: {e}")
+    sys.exit(1)
+except Exception as e:
+    logger.error(f"Unexpected error during environment validation: {e}")
+    sys.exit(1)
 
 # Create FastAPI instance
 app = FastAPI(
@@ -110,6 +125,27 @@ async def security_stats():
             "Security headers"
         ]
     }
+
+
+@app.get("/environment/status")
+async def environment_status():
+    """Get environment validation status and configuration info"""
+    try:
+        # Create a new instance without validation to avoid startup issues
+        env_manager = EnvironmentManager(validate_on_init=False)
+        validation_status = env_manager.get_validation_status()
+        
+        return {
+            "status": "success",
+            "validation": validation_status,
+            "message": "Environment status retrieved successfully"
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": f"Failed to get environment status: {str(e)}",
+            "validation": None
+        }
 
 
 routers = [auth.router, agent.router, profile.router]
