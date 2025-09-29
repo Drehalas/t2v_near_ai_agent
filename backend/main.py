@@ -20,6 +20,7 @@ from middleware.security.api_key_auth import APIKeyAuthMiddleware
 from middleware.security.security_logger import SecurityLoggingMiddleware
 from middleware.security.security_monitor import SecurityMonitoringMiddleware
 from utils.environment_manager import EnvironmentManager, EnvironmentValidationError
+from utils.response_wrapper import ResponseWrapper, StandardResponse
 from utils.logger import logger
 
 # Load environment variables
@@ -215,7 +216,7 @@ async def security_stats():
     }
 
 
-@app.get("/environment/status")
+@app.get("/environment/status", response_model=StandardResponse)
 async def environment_status():
     """Get environment validation status and configuration info"""
     try:
@@ -223,17 +224,14 @@ async def environment_status():
         env_manager = EnvironmentManager(validate_on_init=False)
         validation_status = env_manager.get_validation_status()
         
-        return {
-            "status": "success",
-            "validation": validation_status,
-            "message": "Environment status retrieved successfully"
-        }
+        return ResponseWrapper.success(
+            message="Environment status retrieved successfully",
+            data={"validation": validation_status}
+        )
     except Exception as e:
-        return {
-            "status": "error",
-            "message": f"Failed to get environment status: {str(e)}",
-            "validation": None
-        }
+        return ResponseWrapper.server_error(
+            message=f"Failed to get environment status: {str(e)}"
+        )
 
 
 routers = [auth.router, agent.router, profile.router]

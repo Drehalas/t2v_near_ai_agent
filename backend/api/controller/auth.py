@@ -18,6 +18,7 @@ from utils.constants.collection_name import CollectionName
 from utils.database import Database, get_db
 from utils.environment_manager import (EnvironmentManager,
                                        get_environment_manager)
+from utils.response_wrapper import ResponseWrapper, StandardResponse
 from utils.security.authenticate import create_access_token
 from utils.security.otp import generate_otp, verify_otp
 
@@ -136,7 +137,10 @@ def login(
         username,
         OTPNotification("Your otp code", "OTP Code", otp_code),
     )
-    return return_success_response()
+    return ResponseWrapper.success(
+        message="OTP sent successfully",
+        data={"username": username}
+    )
 
 
 def get_user(db: Database, form_data: OAuth2PasswordRequestForm) -> [Any]:
