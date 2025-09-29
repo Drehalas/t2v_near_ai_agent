@@ -101,8 +101,96 @@ async def root():
 
 @app.get("/health", response_model=HealthResponse)
 async def health_check():
-    """Health check endpoint"""
+    """Basic health check endpoint"""
     return HealthResponse(status="healthy", message="Service is up and running")
+
+
+@app.get("/health/detailed")
+async def detailed_health_check():
+    """Detailed health check with service dependencies"""
+    health_status = {"status": "healthy", "checks": {}, "timestamp": None}
+    
+    # Import here to avoid circular imports
+    from datetime import datetime
+    from utils.database import Database
+    import requests
+    import os
+    
+    health_status["timestamp"] = datetime.utcnow().isoformat()
+    
+    # Check database connectivity
+    try:
+        db = Database("health_check")
+        # Simple ping to check if MongoDB is accessible
+        db.client.admin.command('ping')
+        health_status["checks"]["database"] = {
+            "status": "healthy",
+            "message": "MongoDB connection successful"
+        }
+    except Exception as e:
+        health_status["checks"]["database"] = {
+            "status": "unhealthy", 
+            "message": f"Database connection failed: {str(e)}"
+        }
+        health_status["status"] = "degraded"
+    
+    # Check NEAR network connectivity (if configured)
+    try:
+        near_network = os.getenv("NEAR_NETWORK", "testnet")
+        if near_network == "mainnet":
+            near_rpc = "https://rpc.mainnet.near.org"
+        else:
+            near_rpc = "https://rpc.testnet.near.org"
+        
+        response = requests.get(f"{near_rpc}/status", timeout=5)
+        if response.status_code == 200:
+            health_status["checks"]["near_network"] = {
+                "status": "healthy",
+                "message": f"NEAR {near_network} network accessible"
+            }
+        else:
+            health_status["checks"]["near_network"] = {
+                "status": "unhealthy",
+                "message": f"NEAR network returned status {response.status_code}"
+            }
+            health_status["status"] = "degraded"
+    except Exception as e:
+        health_status["checks"]["near_network"] = {
+            "status": "unhealthy",
+            "message": f"NEAR network check failed: {str(e)}"
+        }
+        health_status["status"] = "degraded"
+    
+    # Check environment configuration
+    try:
+        env_manager = EnvironmentManager(validate_on_init=False)
+        missing_vars = env_manager.get_missing_variables()
+        if not missing_vars:
+            health_status["checks"]["environment"] = {
+                "status": "healthy",
+                "message": "All required environment variables present"
+            }
+        else:
+            health_status["checks"]["environment"] = {
+                "status": "unhealthy",
+                "message": f"Missing variables: {', '.join(missing_vars)}"
+            }
+            health_status["status"] = "degraded"
+    except Exception as e:
+        health_status["checks"]["environment"] = {
+            "status": "unhealthy",
+            "message": f"Environment check failed: {str(e)}"
+        }
+        health_status["status"] = "degraded"
+    
+    # Add service version info
+    health_status["version"] = {
+        "service": "T2V NEAR AI Agent",
+        "version": "0.1.0",
+        "environment": os.getenv("OS", "dev")
+    }
+    
+    return health_status
 
 
 @app.get("/security/stats")
