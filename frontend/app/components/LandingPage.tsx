@@ -1,6 +1,8 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
+import Image from 'next/image'
 
 export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -8,7 +10,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-base-100">
       {/* Navigation */}
-      <nav className="navbar bg-base-100 shadow-sm">
+      <nav className="navbar bg-base-100 shadow-sm animate-fade-in">
         <div className="navbar-start">
           <div className="dropdown">
             <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -19,27 +21,41 @@ export default function LandingPage() {
             <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
               <li><a href="#features">Features</a></li>
               <li><a href="#ecosystem">Ecosystem</a></li>
-              <li><a href="#developers">Developers</a></li>
+              <li><Link href="/docs">Developers</Link></li>
               <li><a href="#community">Community</a></li>
+              <li className="menu-title"><span>Apps</span></li>
+              <li><Link href="/lending">Lending App</Link></li>
+              <li><Link href="/mythos-reply">Mythos Reply</Link></li>
             </ul>
           </div>
-          <a className="btn btn-ghost text-xl font-bold text-primary">MythOS NEAR</a>
+          <Link href="/" className="btn btn-ghost text-xl font-bold text-primary">MythOS NEAR</Link>
         </div>
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1">
             <li><a href="#features" className="btn btn-ghost">Features</a></li>
             <li><a href="#ecosystem" className="btn btn-ghost">Ecosystem</a></li>
-            <li><a href="#developers" className="btn btn-ghost">Developers</a></li>
+            <li><Link href="/docs" className="btn btn-ghost">Developers</Link></li>
             <li><a href="#community" className="btn btn-ghost">Community</a></li>
+            <li>
+              <details>
+                <summary className="btn btn-ghost">Apps</summary>
+                <ul className="p-2 bg-base-100 rounded-box shadow">
+                  <li><Link href="/lending">Lending App</Link></li>
+                  <li><Link href="/mythos-reply">Mythos Reply</Link></li>
+                  <li><Link href="/mythos-reply/dashboard">Reply Dashboard</Link></li>
+                  <li><Link href="/lending/docs">Lending Docs</Link></li>
+                </ul>
+              </details>
+            </li>
           </ul>
         </div>
         <div className="navbar-end">
-          <a className="btn btn-primary">Get Started</a>
+          <Link href="/mythos-reply" className="btn btn-primary">Get Started</Link>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="hero min-h-screen bg-gradient-to-br from-primary/10 to-secondary/10">
+      <section className="hero min-h-screen bg-gradient-to-br from-primary/10 to-secondary/10 animate-fade-in">
         <div className="hero-content text-center">
           <div className="max-w-4xl">
             <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
@@ -50,15 +66,38 @@ export default function LandingPage() {
               DeFi interactions, and blockchain automation in a decentralized, self-sustainable environment.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="btn btn-primary btn-lg">Start Building</button>
-              <button className="btn btn-outline btn-lg">Learn More</button>
+              <Link href="/mythos-reply" className="btn btn-primary btn-lg floating-btn">Start Building</Link>
+              <Link href="/docs" className="btn btn-outline btn-lg">Learn More</Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Partners / Integrations (pyth-like marquee grid) */}
+      <section className="py-12 bg-base-100 animate-fade-in">
+        <div className="container mx-auto px-4">
+          <p className="text-center uppercase tracking-widest text-xs text-base-content/60 mb-6">Integrated with</p>
+          <div className="overflow-hidden">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-8 items-center justify-items-center opacity-80">
+              {[
+                { src: '/globe.svg', alt: 'Globe' },
+                { src: '/next.svg', alt: 'Next.js' },
+                { src: '/vercel.svg', alt: 'Vercel' },
+                { src: '/file.svg', alt: 'File' },
+                { src: '/window.svg', alt: 'Window' },
+                { src: '/Ines.svg', alt: 'Ines' },
+              ].map((logo, i) => (
+                <div key={i} className="transition transform hover:scale-105">
+                  <Image src={logo.src} alt={logo.alt} width={96} height={32} className="w-24 h-auto opacity-70 hover:opacity-100" />
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 bg-base-200">
+      <section id="features" className="py-20 bg-base-200 animate-slide-up">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">Powered by First-Party Intelligence</h2>
@@ -70,7 +109,7 @@ export default function LandingPage() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Feature 1 */}
-            <div className="card bg-base-100 shadow-xl">
+            <div className="card bg-base-100 shadow-xl animate-fade-in">
               <div className="card-body">
                 <div className="flex items-center mb-4">
                   <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center">
@@ -88,7 +127,7 @@ export default function LandingPage() {
             </div>
 
             {/* Feature 2 */}
-            <div className="card bg-base-100 shadow-xl">
+            <div className="card bg-base-100 shadow-xl animate-fade-in animate-delay-200">
               <div className="card-body">
                 <div className="flex items-center mb-4">
                   <div className="w-12 h-12 bg-secondary/20 rounded-lg flex items-center justify-center">
@@ -106,7 +145,7 @@ export default function LandingPage() {
             </div>
 
             {/* Feature 3 */}
-            <div className="card bg-base-100 shadow-xl">
+            <div className="card bg-base-100 shadow-xl animate-fade-in animate-delay-300">
               <div className="card-body">
                 <div className="flex items-center mb-4">
                   <div className="w-12 h-12 bg-accent/20 rounded-lg flex items-center justify-center">
@@ -127,7 +166,7 @@ export default function LandingPage() {
       </section>
 
       {/* Ecosystem Section */}
-      <section id="ecosystem" className="py-20">
+      <section id="ecosystem" className="py-20 animate-slide-up">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">Trusted by Leading Protocols</h2>
@@ -147,40 +186,45 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-20 bg-primary text-primary-content">
+      {/* Data Feeds / Live Stats */}
+      <section className="py-20 bg-primary text-primary-content animate-slide-in-left">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
-            <div className="stat">
-              <div className="stat-value text-4xl">120+</div>
-              <div className="stat-title">Protocol Integrations</div>
-            </div>
-            <div className="stat">
-              <div className="stat-value text-4xl">$2.5B+</div>
-              <div className="stat-title">Total Value Locked</div>
-            </div>
-            <div className="stat">
-              <div className="stat-value text-4xl">50K+</div>
-              <div className="stat-title">Active Users</div>
-            </div>
-            <div className="stat">
-              <div className="stat-value text-4xl">99.9%</div>
-              <div className="stat-title">Uptime</div>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
+            {[
+              { v: '120+', t: 'Protocol Integrations' },
+              { v: '$2.5B+', t: 'Total Value Secured' },
+              { v: '50K+', t: 'Developers & Users' },
+              { v: '99.9%', t: 'Network Uptime' },
+            ].map((s, i) => (
+              <div key={s.t} className={`stat rounded-2xl bg-primary/10 backdrop-blur-md border border-primary/20 animate-fade-in ${i===1?'animate-delay-100':''} ${i===2?'animate-delay-200':''} ${i===3?'animate-delay-300':''}`}>
+                <div className="stat-value text-4xl">{s.v}</div>
+                <div className="stat-title text-primary-content/80">{s.t}</div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              'Low-latency updates',
+              'Cross-chain ready',
+              'First-party sources',
+              'Tamper-resistant',
+            ].map((chip, i) => (
+              <div key={chip} className={`px-4 py-2 rounded-full bg-primary/20 text-primary-content text-sm text-center animate-pulse-soft ${i===1?'animate-delay-100':''} ${i===2?'animate-delay-200':''} ${i===3?'animate-delay-300':''}`}>{chip}</div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-secondary to-primary text-white">
+      <section className="py-20 bg-gradient-to-r from-secondary to-primary text-white animate-slide-in-right">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold mb-6">Ready to Build the Future?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
             Join thousands of developers building intelligent applications with our AI agent infrastructure.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="btn btn-accent btn-lg">Start Building Now</button>
-            <button className="btn btn-outline btn-lg text-white border-white hover:bg-white hover:text-primary">View Documentation</button>
+            <Link href="/mythos-reply" className="btn btn-accent btn-lg floating-btn">Start Building Now</Link>
+            <Link href="/docs" className="btn btn-outline btn-lg text-white border-white hover:bg-white hover:text-primary">View Documentation</Link>
           </div>
         </div>
       </section>
