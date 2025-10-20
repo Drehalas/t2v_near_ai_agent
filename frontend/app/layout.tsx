@@ -32,24 +32,21 @@ export default function RootLayout({
         <meta name="color-scheme" content="light dark" />
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-16x16.png" />
+        <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192x192.png" />
       </head>
       <body className={`${inter.className} min-h-screen bg-base-100 text-base-content overflow-x-hidden`}>
         <ServiceWorkerRegistration />
         <MobileNetworkIndicator />
         <AuthProvider>
           <WalletProvider>
-            <AuthGuard>
-              <div className="min-h-screen flex flex-col max-w-full">
-                <Navbar />
-                <main className="flex-1 w-full px-2 sm:px-4 md:px-6 lg:px-8">
-                  <div className="max-w-7xl mx-auto w-full">
-                    {children}
-                  </div>
-                </main>
-              </div>
-            </AuthGuard>
+            <div className="min-h-screen flex flex-col max-w-full">
+              <Navbar />
+              <main className="flex-1 w-full px-2 sm:px-4 md:px-6 lg:px-8">
+                <div className="max-w-7xl mx-auto w-full">
+                  {children}
+                </div>
+              </main>
+            </div>
           </WalletProvider>
         </AuthProvider>
       </body>

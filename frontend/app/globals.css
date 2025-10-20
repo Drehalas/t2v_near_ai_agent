@@ -56,7 +56,7 @@
   
   /* Mobile navigation improvements */
   .navbar {
-    @apply sticky top-0 z-50 backdrop-blur-md bg-base-100/90;
+    @apply sticky top-0 z-50 backdrop-blur-md bg-base-100 bg-opacity-90;
     border-bottom: 1px solid hsl(var(--bc) / 0.1);
   }
 }

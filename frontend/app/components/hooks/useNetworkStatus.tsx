@@ -18,6 +18,9 @@ export function useNetworkStatus(): NetworkStatus {
   })
 
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return
+    
     // Initial status
     const updateNetworkStatus = () => {
       const connection = (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection

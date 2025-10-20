@@ -4,6 +4,9 @@ import { useEffect } from 'react'
 
 export default function ServiceWorkerRegistration() {
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return
+    
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker
         .register('/sw.js')
